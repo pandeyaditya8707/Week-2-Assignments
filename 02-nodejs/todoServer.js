@@ -40,10 +40,42 @@
   Testing the server - run `npm run test-todoServer` command in terminal
  */
 const express = require('express');
-const bodyParser = require('body-parser');
-
 const app = express();
+app.use(express.json());
 
-app.use(bodyParser.json());
+ array to store todo list items
+let todoList = [];
 
-module.exports = app;
+// Get all todo items
+app.get('/todos', (req, res) => {
+  res.json(todoList);
+});
+
+// Create a new todo item
+app.post('/todos', (req, res) => {
+  const todoItem = req.body;
+  todoList.push(todoItem);
+  res.json(todoItem);
+});
+
+// Update a todo item
+app.put('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  const updatedTodoItem = req.body;
+  todoList[id] = updatedTodoItem;
+  res.json(updatedTodoItem);
+});
+
+// Delete a todo item
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  const deletedTodoItem = todoList[id];
+  todoList = todoList.filter((_, index) => index != id);
+  res.json(deletedTodoItem);
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
